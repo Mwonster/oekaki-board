@@ -1,70 +1,3 @@
-  /* rss feed */
-
-// async function loadFeed() {
-//     const response = await fetch("feed.xml");
-//     const xmlText = await response.text();
-
-//     const parser = new DOMParser();
-//     const xml = parser.parseFromString(xmlText, "application/xml");
-
-//     const items = Array.from(xml.querySelectorAll("item"));
-//     const output = document.getElementById("feed");
-
-//     function formatDate(dateStr) {
-//         const date = new Date(dateStr);
-//         if (isNaN(date)) return dateStr;
-
-//         const m = String(date.getMonth() + 1).padStart(2, "0");
-//         const d = String(date.getDate()).padStart(2, "0");
-//         const yy = String(date.getFullYear()).slice(-2);
-
-//         const hours = String(date.getHours()).padStart(2, "0");
-//         const mins = String(date.getMinutes()).padStart(2, "0");
-
-//         return `${m}.${d}.${yy} @ ${hours}:${mins}`;
-//     }
-
-//     let html = "";
-
-//     items.forEach((item, index) => {
-//         const title = item.querySelector("title")?.textContent.trim() || "";
-//         const description = item.querySelector("description")?.textContent.trim() || "";
-//         const pubDate = item.querySelector("pubDate")?.textContent.trim() || "";
-
-//         const formatted = formatDate(pubDate);
-
-//         html += `<b>${formatted} - ${title}</b>: ${description}`;
-
-//         if (index < items.length - 1) {
-//             html += `<hr>`;
-//         }
-//     });
-
-//     output.innerHTML = html;
-// }
-
-// loadFeed();
-
-/* home page height */
-
-// window.addEventListener("load", syncHeight);
-// window.addEventListener("resize", syncHeight);
-
-// function syncHeight() {
-//     const wrapper = document.querySelector("#wrapper");
-//     const left = document.querySelector("#left");
-//     const home = document.querySelector("#home");
-
-//     if (!wrapper || !left || !home) return;
-
-//     if (wrapper.offsetWidth === 1040) {
-//         home.style.height = `${left.offsetHeight + 40}px`;
-//     } else {
-//         home.style.height = "auto";
-//     }
-// }
-
-
 // oekaki.js
 
 const canvas = document.getElementById("drawCanvas");
@@ -146,30 +79,39 @@ document.getElementById("submitBtn").addEventListener("click", () => {
 
     const dataURL = canvas.toDataURL("image/png");
 
-    // Firebase Storage upload
-    const timestamp = Date.now();
-    const filename = `oekaki/canvas_${timestamp}_${Math.floor(Math.random() * 100000)}.png`;
-    const storageRef = storage.ref().child(filename);
+    // Check image count BEFORE uploading
+    db.collection("oekaki").get().then(snapshot => {
+        if (snapshot.size >= 300) {
+            showMessage("Image limit reached (300). Please delete an older drawing first.");
+            return;
+        }
 
-    showMessage("Uploading...");
+        // Firebase Storage upload
+        const timestamp = Date.now();
+        const filename = `oekaki/canvas_${timestamp}_${Math.floor(Math.random() * 100000)}.png`;
+        const storageRef = storage.ref().child(filename);
 
-    storageRef.putString(dataURL, "data_url")
-        .then(() => {
-            // Save metadata to Firestore
-            return db.collection("oekaki").add({
-                path: filename,
-                timestamp: timestamp
+        showMessage("Uploading...");
+
+        storageRef.putString(dataURL, "data_url")
+            .then(() => {
+                // Save metadata to Firestore
+                return db.collection("oekaki").add({
+                    path: filename,
+                    timestamp: timestamp
+                });
+            })
+            .then(() => {
+                showMessage("Image submitted successfully!");
+                loadGallery();
+            })
+            .catch((err) => {
+                console.error(err);
+                showMessage("Upload failed.");
             });
-        })
-        .then(() => {
-            showMessage("Image submitted successfully!");
-            loadGallery();
-        })
-        .catch((err) => {
-            console.error(err);
-            showMessage("Upload failed.");
-        });
+    });
 });
+
 
 function loadGallery() {
     const container = document.getElementById("submittedImages");
