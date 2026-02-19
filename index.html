@@ -3,79 +3,29 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8">
-	<!-- <meta name="description" 
-				content="">
-	<meta name="keywords" 
-				content=""> -->
-  <!-- <link rel="icon" 
-  			href="/img/misc-imgs/Eye3-68x68.png"
-  			loading="lazy"> -->
 	<title>Oekaki</title>
-
-	<!-- <link rel="stylesheet" href="/css/style.css">
-	<link rel="stylesheet" href="/css/theme.css">
-	<script type="text/javascript" 
-					src="/js2/browser.js"></script> -->
-
-
-<style>
-.drawingCanvasWrapper {
-	max-width: 1000px;
-	margin: 0 auto;
-	display: flex; 
-	flex-direction: column; 
-	align-items: center;
-}
-
-.drawingCanvasOptions{
-	display: flex;
-	padding: 1rem 0;
-	gap: 1rem;
-	flex-flow: row nowrap;
-	justify-content: center;
-}
-
-.drawingCanvasBg {
-	background: var(--grey-middle);
-}
-</style>
+	<link rel="stylesheet" href="oekakiStyle.css">
 </head>
 <body>
-	<!-- <div id="header"></div> -->
-	<main>
-		<!-- <section class="bg-space2"> -->
-			<!-- <section id="models3D" 
-							 class="product hidden">
-				<section class="itemTitle">
-					<h2>Oekaki</h2>
-				</section>
-			</section> -->
+	<div class="drawingCanvasWrapper">
+		<canvas id="drawCanvas" width="600" height="400" class="drawingCanvasBg"></canvas>
 
-			<!-- Canvas + controls -->
-			<div class="drawingCanvasWrapper">
-				<canvas id="drawCanvas" width="600" height="400" class="drawingCanvasBg"></canvas>
+		<div>
+			<div class="drawingCanvasOptions">
+				<input type="color" id="colorPicker" value="#000000">
+				<input type="range" id="penWidth" min="1" max="20" value="3">
 
-				<div>
-					<div class="drawingCanvasOptions">
-						<input type="color" id="colorPicker" value="#000000">
-						<input type="range" id="penWidth" min="1" max="20" value="3">
-
-						<button id="undoBtn">Undo</button>
-						<button id="clearBtn">Clear</button>
-						<button id="submitBtn">Submit</button>
-					</div>
-
-					<div id="message"></div>
-					<p>Inappropriate drawings, prejudice, and zealotry will be removed. xP</p>
-				</div>
+				<button id="undoBtn">Undo</button>
+				<button id="clearBtn">Clear</button>
+				<button id="submitBtn">Submit</button>
 			</div>
-			<h2>Gallery</h2>
-			<div id="submittedImages"></div>
 
-		<!-- </section> -->
-	</main>
-
-	<!-- <div id="footer"></div> -->
+			<div id="message"></div>
+			<p>Inappropriate drawings, prejudice, and zealotry will be removed. xP</p>
+		</div>
+	</div>
+	<h2>Gallery</h2>
+	<div id="submittedImages"></div>
 
 <!-- Firebase v8 CDN -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -85,7 +35,6 @@
 <!-- Your oekaki logic -->
 <script src="firebase-init.js"></script>
 <script src="oekaki.js"></script>
-
 
 </body>
 </html>

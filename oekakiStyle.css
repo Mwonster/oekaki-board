@@ -1,0 +1,19 @@
+.drawingCanvasWrapper {
+	max-width: 1000px;
+	margin: 0 auto;
+	display: flex; 
+	flex-direction: column; 
+	align-items: center;
+}
+
+.drawingCanvasOptions{
+	display: flex;
+	padding: 1rem 0;
+	gap: 1rem;
+	flex-flow: row nowrap;
+	justify-content: center;
+}
+
+.drawingCanvasBg {
+	background: #1a1616;
+}
