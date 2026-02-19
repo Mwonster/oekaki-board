@@ -1,49 +1,49 @@
   /* rss feed */
 
-async function loadFeed() {
-    const response = await fetch("feed.xml");
-    const xmlText = await response.text();
+// async function loadFeed() {
+//     const response = await fetch("feed.xml");
+//     const xmlText = await response.text();
 
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "application/xml");
+//     const parser = new DOMParser();
+//     const xml = parser.parseFromString(xmlText, "application/xml");
 
-    const items = Array.from(xml.querySelectorAll("item"));
-    const output = document.getElementById("feed");
+//     const items = Array.from(xml.querySelectorAll("item"));
+//     const output = document.getElementById("feed");
 
-    function formatDate(dateStr) {
-        const date = new Date(dateStr);
-        if (isNaN(date)) return dateStr;
+//     function formatDate(dateStr) {
+//         const date = new Date(dateStr);
+//         if (isNaN(date)) return dateStr;
 
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const d = String(date.getDate()).padStart(2, "0");
-        const yy = String(date.getFullYear()).slice(-2);
+//         const m = String(date.getMonth() + 1).padStart(2, "0");
+//         const d = String(date.getDate()).padStart(2, "0");
+//         const yy = String(date.getFullYear()).slice(-2);
 
-        const hours = String(date.getHours()).padStart(2, "0");
-        const mins = String(date.getMinutes()).padStart(2, "0");
+//         const hours = String(date.getHours()).padStart(2, "0");
+//         const mins = String(date.getMinutes()).padStart(2, "0");
 
-        return `${m}.${d}.${yy} @ ${hours}:${mins}`;
-    }
+//         return `${m}.${d}.${yy} @ ${hours}:${mins}`;
+//     }
 
-    let html = "";
+//     let html = "";
 
-    items.forEach((item, index) => {
-        const title = item.querySelector("title")?.textContent.trim() || "";
-        const description = item.querySelector("description")?.textContent.trim() || "";
-        const pubDate = item.querySelector("pubDate")?.textContent.trim() || "";
+//     items.forEach((item, index) => {
+//         const title = item.querySelector("title")?.textContent.trim() || "";
+//         const description = item.querySelector("description")?.textContent.trim() || "";
+//         const pubDate = item.querySelector("pubDate")?.textContent.trim() || "";
 
-        const formatted = formatDate(pubDate);
+//         const formatted = formatDate(pubDate);
 
-        html += `<b>${formatted} - ${title}</b>: ${description}`;
+//         html += `<b>${formatted} - ${title}</b>: ${description}`;
 
-        if (index < items.length - 1) {
-            html += `<hr>`;
-        }
-    });
+//         if (index < items.length - 1) {
+//             html += `<hr>`;
+//         }
+//     });
 
-    output.innerHTML = html;
-}
+//     output.innerHTML = html;
+// }
 
-loadFeed();
+// loadFeed();
 
 /* home page height */
 
