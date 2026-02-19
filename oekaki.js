@@ -47,22 +47,22 @@
 
 /* home page height */
 
-window.addEventListener("load", syncHeight);
-window.addEventListener("resize", syncHeight);
+// window.addEventListener("load", syncHeight);
+// window.addEventListener("resize", syncHeight);
 
-function syncHeight() {
-    const wrapper = document.querySelector("#wrapper");
-    const left = document.querySelector("#left");
-    const home = document.querySelector("#home");
+// function syncHeight() {
+//     const wrapper = document.querySelector("#wrapper");
+//     const left = document.querySelector("#left");
+//     const home = document.querySelector("#home");
 
-    if (!wrapper || !left || !home) return;
+//     if (!wrapper || !left || !home) return;
 
-    if (wrapper.offsetWidth === 1040) {
-        home.style.height = `${left.offsetHeight + 40}px`;
-    } else {
-        home.style.height = "auto";
-    }
-}
+//     if (wrapper.offsetWidth === 1040) {
+//         home.style.height = `${left.offsetHeight + 40}px`;
+//     } else {
+//         home.style.height = "auto";
+//     }
+// }
 
 
 // oekaki.js

@@ -4,7 +4,7 @@
     authDomain: "mwonster-master.firebaseapp.com",
     databaseURL: "https://mwonster-master-default-rtdb.firebaseio.com",
     projectId: "mwonster-master",
-    storageBucket: "mwonster-master.appspot.com",
+    storageBucket: "mwonster-master.firebasestorage.app",
     messagingSenderId: "812863505828",
     appId: "1:812863505828:web:1430efb825951553662d31",
     measurementId: "G-90G2VEMZCZ"
