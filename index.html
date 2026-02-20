@@ -25,7 +25,7 @@
 		</div>
 	</div>
 	<h2>Gallery</h2>
-	<div id="submittedImages"></div>
+	<div id="submittedImages" class="submittedImages"></div>
 
 <!-- Firebase v8 CDN -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -35,6 +35,18 @@
 <!-- Your oekaki logic -->
 <script src="firebase-init.js"></script>
 <script src="oekaki.js"></script>
+
+<script>
+function sendHeight() {
+  const height = document.body.scrollHeight;
+  parent.postMessage({ type: "resize-iframe", height }, "*");
+}
+
+window.addEventListener("load", sendHeight);
+window.addEventListener("resize", sendHeight);
+
+
+</script>
 
 </body>
 </html>

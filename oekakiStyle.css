@@ -400,6 +400,10 @@ template {
 }
 /*END OF normalize.css///////////////////////*/
 
+:root{
+  --whiteColour: #dbdbdb;
+}
+
 *,
 *::before,
 *::after{
@@ -413,10 +417,11 @@ template {
 html{
   font-size: 62.5%;
 }
+
 body{
   font-size: 1.6rem;
   letter-spacing: 0.05rem;
-  color: #f1f1f1;
+  color: var(--whiteColour);
   font-family: sans-serif;
 }
 
@@ -437,5 +442,9 @@ body{
 }
 
 .drawingCanvasBg {
-	background: #dbdbdb;
+	background: var(--whiteColour);
+}
+
+.submittedImages{
+  display: flex;
 }
