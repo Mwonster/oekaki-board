@@ -128,7 +128,15 @@ function loadGallery() {
 
             if (snapshot.empty) {
                 container.textContent = "No images yet.";
+                parent.postMessage({ type: "resize-iframe", height: document.body.scrollHeight }, "*");
                 return;
+            }
+
+            function notifyParentHeight() {
+                parent.postMessage({
+                    type: "resize-iframe",
+                    height: document.body.scrollHeight
+                }, "*");
             }
 
             snapshot.forEach((doc) => {
@@ -153,6 +161,8 @@ function loadGallery() {
 
                 const img = document.createElement("img");
 
+                img.addEventListener("load", notifyParentHeight);
+
                 storage.ref().child(path).getDownloadURL()
                     .then((url) => {
                         img.src = url;
@@ -165,12 +175,22 @@ function loadGallery() {
                 wrapper.appendChild(label);
                 container.appendChild(wrapper);
             });
+
+            // Initial height update
+            notifyParentHeight();
         })
         .catch((err) => {
             console.error(err);
             container.textContent = "Failed to load gallery.";
         });
 }
+
+
+function notifyParentHeight() {
+    const height = document.body.scrollHeight;
+    parent.postMessage({ type: "resize-iframe", height }, "*");
+}
+
 
 function showMessage(text, duration = 3000) {
     const msg = document.getElementById("message");
