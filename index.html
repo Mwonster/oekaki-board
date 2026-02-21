@@ -11,8 +11,14 @@
 		<canvas id="drawCanvas" width="600" height="400" class="drawingCanvasBg"></canvas>
 
 		<div>
+			<label for="authorInput">Author:</label>
+			<input id="authorInput" type="text" placeholder="(optional)" maxlength="16">
+		</div>
+		<div>
 			<div class="drawingCanvasOptions">
 				<input type="color" id="colorPicker" value="#000000">
+				<span id="brushSizeDisplay"></span>
+
 				<input type="range" id="penWidth" min="1" max="50" value="1">
 
 				<button id="undoBtn">Undo</button>
@@ -21,6 +27,7 @@
 			</div>
 
 			<div id="message"></div>
+			<p></p>
 			<p>Inappropriate drawings, prejudice, and zealotry will be removed. xP</p>
 		</div>
 	</div>
@@ -52,16 +59,17 @@ window.addEventListener("resize", sendHeight);
 Limit user (cookie) from posting 3 images in a day. Display: Warning: you've already posted too much 😅. 
 either local storage or something idk else, I don't want this easily changable through changing the html or script or something. 
 
-Display brush size. Remember brush size. Start on 10 for brush size. 
+i want to add an input box called author. The user can put their name there, but it's optional. and it should show on the bottom right. next to the upload date of the image. 
 
 
 Use my other project's lightbox script and incorporate it here.
 
-Gallery takes a while to load in, so the height stuff should either delay or something else. 
-(works maybe?)
 
 
-My site has darkmode functionality, so could the text and background change when I change something else on the site?
+My site has darkmode functionality, so could the text and background change when I change the site theme? 
+
+
+
 
 maybe put my projects on github
 

@@ -10,6 +10,21 @@ let width = document.getElementById("penWidth").value;
 let undoStack = [];
 let submitConfirm = false;
 
+let userId = localStorage.getItem("oekakiUserId");
+if (!userId) {
+    userId = "user_" + Math.random().toString(36).slice(2);
+    localStorage.setItem("oekakiUserId", userId);
+}
+
+// Load saved brush size or default to 10
+let savedWidth = localStorage.getItem("brushWidth");
+width = savedWidth ? Number(savedWidth) : 10;
+
+// Apply it to the slider and display
+document.getElementById("penWidth").value = width;
+document.getElementById("brushSizeDisplay").textContent = width;
+
+
 function saveState() {
     undoStack.push(canvas.toDataURL());
     if (undoStack.length > 50) undoStack.shift();
@@ -20,6 +35,7 @@ canvas.addEventListener("mousedown", (e) => {
     drawing = true;
     ctx.beginPath();
     ctx.moveTo(e.offsetX, e.offsetY);
+    document.getElementById("brushSizeDisplay").textContent = width;
 });
 
 canvas.addEventListener("mousemove", (e) => {
@@ -44,8 +60,11 @@ document.getElementById("colorPicker").addEventListener("change", (e) => {
 });
 
 document.getElementById("penWidth").addEventListener("input", (e) => {
-    width = e.target.value;
+    width = Number(e.target.value);
+    document.getElementById("brushSizeDisplay").textContent = width;
+    localStorage.setItem("brushWidth", width);
 });
+
 
 document.getElementById("undoBtn").addEventListener("click", () => {
     if (undoStack.length > 0) {
@@ -78,39 +97,35 @@ document.getElementById("submitBtn").addEventListener("click", () => {
     submitConfirm = false;
 
     const dataURL = canvas.toDataURL("image/png");
+    const author = document.getElementById("authorInput").value.trim();
 
-    // Check image count BEFORE uploading
-    db.collection("oekaki").get().then(snapshot => {
-        if (snapshot.size >= 300) {
-            showMessage("Image limit reached (300). Please delete an older drawing first.");
-            return;
-        }
+    // Firebase Storage upload
+    const timestamp = Date.now();
+    const filename = `oekaki/canvas_${timestamp}_${Math.floor(Math.random() * 100000)}.png`;
+    const storageRef = storage.ref().child(filename);
 
-        // Firebase Storage upload
-        const timestamp = Date.now();
-        const filename = `oekaki/canvas_${timestamp}_${Math.floor(Math.random() * 100000)}.png`;
-        const storageRef = storage.ref().child(filename);
+    showMessage("Uploading...");
 
-        showMessage("Uploading...");
-
-        storageRef.putString(dataURL, "data_url")
-            .then(() => {
-                // Save metadata to Firestore
-                return db.collection("oekaki").add({
-                    path: filename,
-                    timestamp: timestamp
-                });
-            })
-            .then(() => {
-                showMessage("Image submitted successfully!");
-                loadGallery();
-            })
-            .catch((err) => {
-                console.error(err);
-                showMessage("Upload failed.");
+    storageRef.putString(dataURL, "data_url")
+        .then(() => {
+            // Save metadata to Firestore
+            return db.collection("oekaki").add({
+                path: filename,
+                timestamp: timestamp,
+                author: author || null
             });
-    });
+        })
+        .then(() => {
+            showMessage("Image submitted successfully!");
+            loadGallery();
+        })
+        .catch((err) => {
+            console.error(err);
+            showMessage("Upload failed.");
+        });
 });
+
+
 
 
 function loadGallery() {
@@ -157,7 +172,11 @@ function loadGallery() {
 
                 const label = document.createElement("div");
                 label.className = "timestamp";
-                label.textContent = timestampText;
+
+                label.innerHTML = `
+                    <span class="date">${timestampText}</span>
+                    ${data.author ? `<span class="author">${data.author}</span>` : ""}
+                `;
 
                 const img = document.createElement("img");
 
