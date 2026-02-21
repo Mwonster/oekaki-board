@@ -351,7 +351,7 @@ function loadGallery() {
 
 
 function notifyParentHeight() {
-    const height = document.body.scrollHeight;
+    const height = document.body.scrollHeight + 20;
     parent.postMessage({ type: "resize-iframe", height }, "*");
 }
 
