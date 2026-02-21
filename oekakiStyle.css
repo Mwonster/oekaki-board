@@ -477,7 +477,9 @@ body{
 	background: var(--color-primary);
 }
 
-.submittedImages {
+.submittedImages {	
+  max-width: 1000px;
+	margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
