@@ -16,9 +16,147 @@ if (!userId) {
     localStorage.setItem("oekakiUserId", userId);
 }
 
-// Load saved brush size or default to 10
+// Load saved brush size or default to 5
 let savedWidth = localStorage.getItem("brushWidth");
-width = savedWidth ? Number(savedWidth) : 10;
+width = savedWidth ? Number(savedWidth) : 5;
+
+
+// Shared lightbox elements
+const lightboxGallery = document.getElementById('lightboxGallery');
+const lightboxGalleryImg = document.getElementById('lightboxGallery-img');
+const lightboxGalleryClose = document.getElementById('lightboxGallery-close');
+const prevBtn = document.getElementById('previous-button-gallery');
+const nextBtn = document.getElementById('next-button-gallery');
+const autoplayBtn = document.getElementById('autoplay-btn');
+
+let currentGallery = null;
+let currentIndex = 0;
+let autoplayInterval = null;
+
+function initGallery(galleryId, playlistPath) {
+const gallery = document.getElementById(galleryId);
+if (!gallery) return;
+
+let images = [];
+
+fetch(playlistPath)
+    .then(res => res.json())
+    .then(data => {
+    images = data.images || data;
+    buildGallery(gallery, images);
+    });
+
+function buildGallery(gallery, images) {
+    images.forEach((item, index) => {
+    const cardOfGallery = document.createElement('article');
+    cardOfGallery.className = 'cardOfGallery';
+
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.alt;
+    img.loading = 'lazy';
+
+    cardOfGallery.appendChild(img);
+    gallery.appendChild(cardOfGallery);
+
+    cardOfGallery.addEventListener('click', () => openlightboxGallery(images, index));
+    });
+}
+}
+
+function openlightboxGallery(images, index) {
+currentGallery = images;
+currentIndex = index;
+const item = currentGallery[currentIndex];
+lightboxGalleryImg.src = item.src;
+lightboxGalleryImg.alt = item.alt;
+lightboxGallery.style.display = 'flex';
+
+if (autoplayInterval) {
+    resetProgressBar();
+}
+
+}
+
+function closelightboxGallery() {
+lightboxGallery.style.display = 'none';
+lightboxGalleryImg.src = '';
+currentGallery = null;
+
+if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+    autoplayBtn.textContent = "▶ Autoplay";
+}
+}
+
+function resetProgressBar() {
+const bar = document.getElementById("lightboxProgress");
+if (!bar) return;
+
+bar.style.display = "block";     // show it when autoplay is active
+bar.style.transition = "none";
+bar.style.width = "0%";
+
+void bar.offsetWidth;            // force reflow
+
+bar.style.transition = "width 3s linear";
+bar.style.width = "100%";
+}
+
+
+function showPrev() {
+if (!currentGallery) return;
+currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+openlightboxGallery(currentGallery, currentIndex);
+}
+
+function showNext() {
+if (!currentGallery) return;
+currentIndex = (currentIndex + 1) % currentGallery.length;
+openlightboxGallery(currentGallery, currentIndex);
+
+if (autoplayInterval) resetProgressBar();
+}
+
+function startAutoplay() {
+if (!currentGallery) return;
+
+const bar = document.getElementById("lightboxProgress");
+
+if (!autoplayInterval) {
+    autoplayInterval = setInterval(showNext, 3000);
+    autoplayBtn.textContent = "⏸ Stop";
+
+    resetProgressBar(); // start bar animation
+} else {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+    autoplayBtn.textContent = "▶ Autoplay";
+
+    // Hide + freeze bar
+    bar.style.display = "none";
+    bar.style.transition = "none";
+    bar.style.width = "0%";
+}
+}
+
+
+// Lightbox listeners
+if (lightboxGallery && lightboxGalleryClose && prevBtn && nextBtn && autoplayBtn) {
+    lightboxGalleryClose.addEventListener('click', closelightboxGallery);
+    prevBtn.addEventListener('click', showPrev);
+    nextBtn.addEventListener('click', showNext);
+    autoplayBtn.addEventListener('click', startAutoplay);
+
+    lightboxGallery.addEventListener('click', (e) => {
+        if (e.target === lightboxGallery) closelightboxGallery();
+    });
+}
+
+
+
+
 
 // Apply it to the slider and display
 document.getElementById("penWidth").value = width;
@@ -126,12 +264,13 @@ document.getElementById("submitBtn").addEventListener("click", () => {
 });
 
 
-
+let oekakiImages = [];
 
 function loadGallery() {
     const container = document.getElementById("submittedImages");
     if (!container) return;
 
+    oekakiImages = [];
     container.innerHTML = "Loading...";
 
     db.collection("oekaki")
@@ -145,13 +284,6 @@ function loadGallery() {
                 container.textContent = "No images yet.";
                 parent.postMessage({ type: "resize-iframe", height: document.body.scrollHeight }, "*");
                 return;
-            }
-
-            function notifyParentHeight() {
-                parent.postMessage({
-                    type: "resize-iframe",
-                    height: document.body.scrollHeight
-                }, "*");
             }
 
             snapshot.forEach((doc) => {
@@ -185,10 +317,23 @@ function loadGallery() {
                 storage.ref().child(path).getDownloadURL()
                     .then((url) => {
                         img.src = url;
+
+                        // ⭐ Add to lightbox array
+                        oekakiImages.push({
+                            src: url,
+                            alt: data.author ? `Drawing by ${data.author}` : "Oekaki drawing"
+                        });
+
+                        // ⭐ Make image clickable for lightbox
+                        img.addEventListener("click", () => {
+                            const index = oekakiImages.findIndex(i => i.src === url);
+                            openlightboxGallery(oekakiImages, index);
+                        });
                     })
                     .catch(() => {
                         img.alt = "Failed to load image";
                     });
+
 
                 wrapper.appendChild(img);
                 wrapper.appendChild(label);
@@ -227,3 +372,6 @@ function showMessage(text, duration = 3000) {
 }
 
 window.addEventListener("load", loadGallery);
+
+
+ 

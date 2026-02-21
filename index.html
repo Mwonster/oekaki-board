@@ -34,6 +34,16 @@
 	<h2>Gallery</h2>
 	<div id="submittedImages" class="submittedImages"></div>
 
+<div id="lightboxGallery">
+  <span id="lightboxGallery-close">×</span>
+  <img id="lightboxGallery-img">
+  <button id="previous-button-gallery">Prev</button>
+  <button id="next-button-gallery">Next</button>
+  <button id="autoplay-btn">▶ Autoplay</button>
+  <div id="lightboxProgress"></div>
+</div>
+
+
 <!-- Firebase v8 CDN -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -59,11 +69,7 @@ window.addEventListener("resize", sendHeight);
 Limit user (cookie) from posting 3 images in a day. Display: Warning: you've already posted too much 😅. 
 either local storage or something idk else, I don't want this easily changable through changing the html or script or something. 
 
-i want to add an input box called author. The user can put their name there, but it's optional. and it should show on the bottom right. next to the upload date of the image. 
-
-
-Use my other project's lightbox script and incorporate it here.
-
+i want my gallery's last image to have bottom "padding" or i don't know what to called it. I just want space down there, so if you scroll all the way to the bottom, you see the last image on the top. Do you know what I'm talking about?
 
 
 My site has darkmode functionality, so could the text and background change when I change the site theme? 
