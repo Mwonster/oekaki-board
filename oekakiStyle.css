@@ -477,6 +477,10 @@ body{
 	background: var(--color-primary);
 }
 
+.submittedImagesTitle {
+  text-align: center;
+}
+
 .submittedImages {	
   max-width: 1000px;
 	margin: 0 auto;
@@ -528,7 +532,8 @@ body{
 #lightboxGallery {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; 
+  height: 100%;
   /* background: var(--dark-colour-0_8); */
   display: none;
   align-items: center;
@@ -546,8 +551,7 @@ body{
   image-rendering: auto;
   object-fit: contain;
   /* width: 100%; */
-  height: 90%;
-  width: 90%;
+  width: 80%;
 }
 
 #lightboxGallery-close {
