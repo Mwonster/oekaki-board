@@ -434,6 +434,10 @@ html[data-theme="dark"] {
   margin: 0;
 }
 
+html, body {
+    overflow-x: hidden;
+}
+
 html{
   font-size: 60.5%;
 }
@@ -539,7 +543,7 @@ body{
   box-shadow: 0 0 20px var(--light-colour);
   image-rendering: auto;
   object-fit: contain;
-  width: 90%;
+  width: 100%;
 }
 
 #lightboxGallery-close {

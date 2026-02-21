@@ -65,80 +65,85 @@ function buildGallery(gallery, images) {
 }
 
 function openlightboxGallery(images, index) {
-currentGallery = images;
-currentIndex = index;
-const item = currentGallery[currentIndex];
-lightboxGalleryImg.src = item.src;
-lightboxGalleryImg.alt = item.alt;
-lightboxGallery.style.display = 'flex';
+    currentGallery = images;
+    currentIndex = index;
+    const item = currentGallery[currentIndex];
+    lightboxGalleryImg.src = item.src;
+    lightboxGalleryImg.alt = item.alt;
+    lightboxGallery.style.display = 'flex';
 
-if (autoplayInterval) {
-    resetProgressBar();
-}
+    parent.postMessage({ type: "expand-iframe" }, "*");
+
+
+    if (autoplayInterval) {
+        resetProgressBar();
+    }
 
 }
 
 function closelightboxGallery() {
-lightboxGallery.style.display = 'none';
-lightboxGalleryImg.src = '';
-currentGallery = null;
+    lightboxGallery.style.display = 'none';
+    lightboxGalleryImg.src = '';
+    currentGallery = null;
 
-if (autoplayInterval) {
-    clearInterval(autoplayInterval);
-    autoplayInterval = null;
-    autoplayBtn.textContent = "▶ Autoplay";
-}
+    parent.postMessage({ type: "shrink-iframe" }, "*");
+
+    if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+        autoplayBtn.textContent = "▶ Autoplay";
+    }
 }
 
 function resetProgressBar() {
-const bar = document.getElementById("lightboxProgress");
-if (!bar) return;
+    const bar = document.getElementById("lightboxProgress");
+    if (!bar) return;
 
-bar.style.display = "block";     // show it when autoplay is active
-bar.style.transition = "none";
-bar.style.width = "0%";
+    bar.style.display = "block";     // show it when autoplay is active
+    bar.style.transition = "none";
+    bar.style.width = "0%";
 
-void bar.offsetWidth;            // force reflow
+    void bar.offsetWidth;            // force reflow
 
-bar.style.transition = "width 3s linear";
-bar.style.width = "100%";
+    bar.style.transition = "width 3s linear";
+    bar.style.width = "100%";
 }
 
 
 function showPrev() {
-if (!currentGallery) return;
-currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
-openlightboxGallery(currentGallery, currentIndex);
-}
+    if (!currentGallery) return;
+    currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+    openlightboxGallery(currentGallery, currentIndex);
+    }
 
-function showNext() {
-if (!currentGallery) return;
-currentIndex = (currentIndex + 1) % currentGallery.length;
-openlightboxGallery(currentGallery, currentIndex);
+    function showNext() {
+    if (!currentGallery) return;
+    currentIndex = (currentIndex + 1) % currentGallery.length;
+    openlightboxGallery(currentGallery, currentIndex);
 
-if (autoplayInterval) resetProgressBar();
+    if (autoplayInterval) resetProgressBar();
 }
 
 function startAutoplay() {
-if (!currentGallery) return;
+    if (!currentGallery) return;
 
-const bar = document.getElementById("lightboxProgress");
+    const bar = document.getElementById("lightboxProgress");
 
-if (!autoplayInterval) {
-    autoplayInterval = setInterval(showNext, 3000);
-    autoplayBtn.textContent = "⏸ Stop";
+    if (!autoplayInterval) {
+        autoplayInterval = setInterval(showNext, 3000);
+        autoplayBtn.textContent = "⏸ Stop";
 
-    resetProgressBar(); // start bar animation
-} else {
-    clearInterval(autoplayInterval);
-    autoplayInterval = null;
-    autoplayBtn.textContent = "▶ Autoplay";
+        resetProgressBar(); // start bar animation
+    } else {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+        autoplayBtn.textContent = "▶ Autoplay";
 
-    // Hide + freeze bar
-    bar.style.display = "none";
-    bar.style.transition = "none";
-    bar.style.width = "0%";
-}
+        // Hide + freeze bar
+        bar.style.display = "none";
+        bar.style.transition = "none";
+        bar.style.width = "0%";
+    }
 }
 
 
